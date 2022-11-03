@@ -2,7 +2,7 @@
 
 const templates = require("./templates");
 const DocUtils = require("docxtemplater").DocUtils;
-const DOMParser = require("xmldom").DOMParser;
+const DOMParser = require("@xmldom/xmldom").DOMParser;
 
 function isNaN(number) {
 	return !(number === number);
@@ -11,17 +11,17 @@ function isNaN(number) {
 const ImgManager = require("./imgManager");
 const moduleName = "open-xml-templating/docxtemplater-image-module";
 
-function getInnerDocx({part}) {
+function getInnerDocx({ part }) {
 	return part;
 }
 
-function getInnerPptx({part, left, right, postparsed}) {
+function getInnerPptx({ part, left, right, postparsed }) {
 	const xmlString = postparsed.slice(left + 1, right).reduce(function (concat, item) {
 		return concat + item.value;
 	}, "");
 	const xmlDoc = new DOMParser().parseFromString("<xml>" + xmlString + "</xml>");
-	part.offset = {x: 0, y: 0};
-	part.ext = {cx: 0, cy: 0};
+	part.offset = { x: 0, y: 0 };
+	part.ext = { cx: 0, cy: 0 };
 	const offset = xmlDoc.getElementsByTagName("a:off");
 	const ext = xmlDoc.getElementsByTagName("a:ext");
 	if (ext.length > 0) {
@@ -70,10 +70,10 @@ class ImageModule {
 			return this.options.setParser(placeHolderContent);
 		}
 		if (placeHolderContent.substring(0, 2) === "%%") {
-			return {type, value: placeHolderContent.substr(2), module, centered: true};
+			return { type, value: placeHolderContent.substr(2), module, centered: true };
 		}
 		if (placeHolderContent.substring(0, 1) === "%") {
-			return {type, value: placeHolderContent.substr(1), module, centered: false};
+			return { type, value: placeHolderContent.substr(1), module, centered: false };
 		}
 		return null;
 	}
@@ -88,7 +88,7 @@ class ImageModule {
 			expandTo = this.options.centered ? "w:p" : "w:t";
 			getInner = getInnerDocx;
 		}
-		return DocUtils.traits.expandToOne(parsed, {moduleName, getInner, expandTo});
+		return DocUtils.traits.expandToOne(parsed, { moduleName, getInner, expandTo });
 	}
 	render(part, options) {
 		if (!part.type === "placeholder" || part.module !== moduleName) {
@@ -98,7 +98,7 @@ class ImageModule {
 			part: part,
 		});
 		if (!tagValue) {
-			return {value: this.fileTypeConfig.tagTextXml};
+			return { value: this.fileTypeConfig.tagTextXml };
 		}
 		else if (typeof tagValue === "object") {
 			return this.getRenderedPart(part, tagValue.rId, tagValue.sizePixel);
@@ -118,7 +118,7 @@ class ImageModule {
 			part: part,
 		});
 		if (!value) {
-			return {value: this.fileTypeConfig.tagTextXml};
+			return { value: this.fileTypeConfig.tagTextXml };
 		}
 		return new Promise((resolve) => {
 			const imgBuffer = this.options.getImage(value, part.value);
@@ -149,10 +149,10 @@ class ImageModule {
 		else {
 			newText = this.getRenderedPartDocx(rId, size, centered);
 		}
-		return {value: newText};
+		return { value: newText };
 	}
 	getRenderedPartPptx(part, rId, size, centered) {
-		const offset = {x: parseInt(part.offset.x, 10), y: parseInt(part.offset.y, 10)};
+		const offset = { x: parseInt(part.offset.x, 10), y: parseInt(part.offset.y, 10) };
 		const cellCX = parseInt(part.ext.cx, 10) || 1;
 		const cellCY = parseInt(part.ext.cy, 10) || 1;
 		const imgW = parseInt(size[0], 10) || 1;

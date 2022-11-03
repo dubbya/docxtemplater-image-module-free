@@ -8,7 +8,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var templates = require("./templates");
 var DocUtils = require("docxtemplater").DocUtils;
-var DOMParser = require("xmldom").DOMParser;
+var DOMParser = require("@xmldom/xmldom").DOMParser;
 
 function isNaN(number) {
 	return !(number === number);
@@ -25,9 +25,9 @@ function getInnerDocx(_ref) {
 
 function getInnerPptx(_ref2) {
 	var part = _ref2.part,
-	    left = _ref2.left,
-	    right = _ref2.right,
-	    postparsed = _ref2.postparsed;
+		left = _ref2.left,
+		right = _ref2.right,
+		postparsed = _ref2.postparsed;
 
 	var xmlString = postparsed.slice(left + 1, right).reduce(function (concat, item) {
 		return concat + item.value;
@@ -133,7 +133,7 @@ var ImageModule = function () {
 			} else if ((typeof tagValue === "undefined" ? "undefined" : _typeof(tagValue)) === "object") {
 				return this.getRenderedPart(part, tagValue.rId, tagValue.sizePixel);
 			}
-			
+
 			var imgManager = new ImgManager(this.zip, options.filePath, this.xmlDocuments, this.fileType);
 			var imgBuffer = this.options.getImage(tagValue, part.value);
 			var rId = imgManager.addImageRels(this.getNextImageName(), imgBuffer);
